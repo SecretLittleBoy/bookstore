@@ -1,0 +1,17 @@
+GET http://localhost:8081/v1/shelves/1/books
+
+###
+POST http://localhost:8081/v1/shelves/1/books
+Content-Type: application/json
+
+{
+  "title": "The Art of Computer Programming",
+  "author": "Donald Knuth"
+}
+
+###
+GET http://localhost:8081/v1/shelves/1/books/1
+
+###
+DELETE http://localhost:8081/v1/shelves/1/books/1
+
