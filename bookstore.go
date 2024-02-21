@@ -21,9 +21,9 @@ func (s *server) ListShelves(ctx context.Context, in *emptypb.Empty) (*pb.ListSh
 		if err == gorm.ErrEmptySlice {
 			return &pb.ListShelvesResponse{}, nil
 		}
-		return nil, status.Error(codes.Internal, "failed to list shelves: %v")
+		return nil, status.Error(codes.Internal, "failed to list shelves")
 	}
-	shelfListPb := make([]*pb.Shelf, len(shelfListDatabase))
+	shelfListPb := make([]*pb.Shelf, 0, len(shelfListDatabase))
 	for _, shelf := range shelfListDatabase {
 		shelfListPb = append(shelfListPb, &pb.Shelf{
 			Id:    shelf.ID,
@@ -44,7 +44,7 @@ func (s *server) CreateShelf(ctx context.Context, in *pb.CreateShelfRequest) (*p
 	}
 	shelfDatabase, err := s.bookstore.CreateShelf(ctx, data)
 	if err != nil {
-		return nil, status.Error(codes.Internal, "failed to create shelf: %v")
+		return nil, status.Error(codes.Internal, "failed to create shelf")
 	}
 	return &pb.Shelf{Id: shelfDatabase.ID, Theme: shelfDatabase.Theme, Size: shelfDatabase.Size}, nil
 }
@@ -55,7 +55,7 @@ func (s *server) GetShelf(ctx context.Context, in *pb.GetShelfRequest) (*pb.Shel
 	}
 	shelfDatabase, err := s.bookstore.GetShelf(ctx, in.GetShelf())
 	if err != nil {
-		return nil, status.Error(codes.Internal, "failed to get shelf: %v")
+		return nil, status.Error(codes.Internal, "failed to get shelf")
 	}
 	return &pb.Shelf{Id: shelfDatabase.ID, Theme: shelfDatabase.Theme, Size: shelfDatabase.Size}, nil
 }
@@ -66,7 +66,7 @@ func (s *server) DeleteShelf(ctx context.Context, in *pb.DeleteShelfRequest) (*e
 	}
 	err := s.bookstore.DeleteShelf(ctx, in.GetShelf())
 	if err != nil {
-		return nil, status.Error(codes.Internal, "failed to delete shelf: %v")
+		return nil, status.Error(codes.Internal, "failed to delete shelf")
 	}
 	return &emptypb.Empty{}, nil
 }
