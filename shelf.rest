@@ -1,0 +1,16 @@
+GET http://localhost:8081/v1/shelves
+
+###
+GET http://localhost:8081/v1/shelves/1
+
+###
+POST http://localhost:8081/v1/shelves
+Content-Type: application/json
+
+{
+  "theme": "Fiction",
+  "size": "5"
+}
+
+###
+DELETE http://localhost:8081/v1/shelves/0
