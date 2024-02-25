@@ -79,9 +79,15 @@ message GetShelfRequest { int64 shelf = 1; }
 
 message DeleteShelfRequest { int64 shelf = 1; }
 
-message ListBooksRequest { int64 shelf = 1; }
+message ListBooksRequest {
+  int64 shelf = 1;
+  string page_token = 2;
+}
 
-message ListBooksResponse { repeated Book books = 1; }
+message ListBooksResponse {
+  repeated Book books = 1;
+  string next_page_token = 2;
+}
 
 message CreateBookRequest {
   int64 shelf = 1;

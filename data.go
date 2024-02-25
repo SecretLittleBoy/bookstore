@@ -76,3 +76,10 @@ func (b *bookstore) ListShelf(ctx context.Context) ([]*Shelf, error) {
 func (b *bookstore) DeleteShelf(ctx context.Context, id int64) error {
 	return b.db.WithContext(ctx).Delete(&Shelf{}, id).Error
 }
+
+func (b *bookstore) GetBookListByShelfID(ctx context.Context, shelfID int64, cursor string, pageSize int) ([]*Book, error) {
+	var vl []*Book
+	err := b.db.WithContext(ctx).Where("shelf_id = ? and id > ?", shelfID, cursor).Order("id asc").Limit(pageSize).Find(&vl).Error
+	return vl, err
+}
+

@@ -1,9 +1,12 @@
 .PHONY: gen clean run
 
 PROTO_GENED_FILES = ./pb/*.pb.go ./pb/*.pb.gw.go
-GO_FILES = main.go bookstore.go data.go
+GO_FILES = main.go bookstore.go data.go pagination.go
+PROTO_FILE = ./pb/bookstore.proto
 
 gen: $(PROTO_GENED_FILES)
+
+$(PROTO_GENED_FILES): $(PROTO_FILE)
 	@echo "Generating proto code..."
 	protoc -I=pb \
    --go_out=pb --go_opt=paths=source_relative \

@@ -3,11 +3,19 @@ package main
 import (
 	"bookstore/pb"
 	"context"
+	"fmt"
+	"strconv"
+	"time"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/gorm"
+)
+
+const (
+	defaultCursor   = "0"
+	defaultPageSize = 2
 )
 
 type server struct {
@@ -72,7 +80,55 @@ func (s *server) DeleteShelf(ctx context.Context, in *pb.DeleteShelfRequest) (*e
 }
 
 func (s *server) ListBooks(ctx context.Context, in *pb.ListBooksRequest) (*pb.ListBooksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListBooks not implemented")
+	if in.GetShelf() <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "invalid shelf id")
+	}
+	var (
+		cursor   string = defaultCursor
+		pageSize int    = defaultPageSize
+	)
+	if len(in.GetPageToken()) > 0 {
+		pageInfo := Token(in.GetPageToken()).Decode()
+		if !pageInfo.IsValid() {
+			return nil, status.Error(codes.InvalidArgument, "invalid page token")
+		}
+		cursor = pageInfo.NextID
+		pageSize = int(pageInfo.PageSize)
+	}
+	bookList, err := s.bookstore.GetBookListByShelfID(ctx, in.GetShelf(), cursor, pageSize+1)
+	if err != nil {
+		fmt.Printf("GetBookListByShelfID failed, err:%v\n", err)
+		return nil, status.Error(codes.Internal, "query failed")
+	}
+	var (
+		hasNextPage   bool
+		nextPageToken string
+		realSize      int = len(bookList)
+	)
+	if len(bookList) > pageSize {
+		hasNextPage = true
+		realSize = pageSize
+	}
+	res := make([]*pb.Book, 0, len(bookList))
+	for i := 0; i < realSize; i++ {
+		res = append(res, &pb.Book{
+			Id:     bookList[i].ID,
+			Author: bookList[i].Author,
+			Title:  bookList[i].Title,
+		})
+	}
+	if hasNextPage {
+		nextPageInfo := Page{
+			NextID:        strconv.FormatInt(res[realSize-1].Id, 10), // res[realSize-1].Id 最后一个返回结果的id
+			NextTimeAtUTC: time.Now().Unix(),
+			PageSize:      int64(pageSize),
+		}
+		nextPageToken = string(nextPageInfo.Encode())
+	}
+	return &pb.ListBooksResponse{
+		Books:         res,
+		NextPageToken: nextPageToken,
+	}, nil
 }
 
 func (s *server) CreateBook(ctx context.Context, in *pb.CreateBookRequest) (*pb.Book, error) {
