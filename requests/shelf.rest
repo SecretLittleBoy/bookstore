@@ -1,10 +1,12 @@
-GET http://localhost:8081/v1/shelves
+@PORT = 8080
+
+GET http://localhost:{{PORT}}/v1/shelves
 
 ###
-GET http://localhost:8081/v1/shelves/1
+GET http://localhost:{{PORT}}/v1/shelves/1
 
 ###
-POST http://localhost:8081/v1/shelves
+POST http://localhost:{{PORT}}/v1/shelves
 Content-Type: application/json
 
 {
@@ -13,4 +15,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:8081/v1/shelves/0
+DELETE http://localhost:{{PORT}}/v1/shelves/0

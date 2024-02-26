@@ -1,7 +1,9 @@
-GET http://localhost:8081/v1/shelves/1/books
+@PORT =8081
+
+GET http://localhost:{{PORT}}/v1/shelves/1/books
 
 ###
-POST http://localhost:8081/v1/shelves/1/books
+POST http://localhost:{{PORT}}/v1/shelves/1/books
 Content-Type: application/json
 
 {
@@ -10,14 +12,14 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:8081/v1/shelves/1/books/1
+GET http://localhost:{{PORT}}/v1/shelves/1/books/1
 
 ###
-GET http://localhost:8081/v1/shelves/1/books?page_token=
+GET http://localhost:{{PORT}}/v1/shelves/1/books?page_token=
 
 ###
-GET http://localhost:8081/v1/shelves/1/books?page_token=eyJuZXh0X2lkIjoiMiIsIm5leHRfdGltZV9hdF91dGMiOjE3MDg5MDgzMjcsInBhZ2Vfc2l6ZSI6Mn0=
+GET http://localhost:{{PORT}}/v1/shelves/1/books?page_token=eyJuZXh0X2lkIjoiMiIsIm5leHRfdGltZV9hdF91dGMiOjE3MDg5MDgzMjcsInBhZ2Vfc2l6ZSI6Mn0=
 
 ###
-DELETE http://localhost:8081/v1/shelves/1/books/1
+DELETE http://localhost:{{PORT}}/v1/shelves/1/books/1
 
