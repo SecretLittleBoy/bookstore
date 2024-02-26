@@ -46,5 +46,5 @@ func (t Token) Decode() Page {
 }
 
 func (p Page) IsValid() bool {
-	return !(p.NextID == "" || p.NextTimeAtUTC == 0 || p.NextTimeAtUTC > time.Now().Unix() || p.PageSize <= 0)
+	return !(p.NextID == "" || p.NextTimeAtUTC <= 0 || p.NextTimeAtUTC > time.Now().Unix() || p.PageSize <= 0)
 }
